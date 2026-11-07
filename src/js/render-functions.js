@@ -5,6 +5,8 @@ import 'izitoast/dist/css/iziToast.min.css';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const gallery = document.querySelector('.gallery');
+const loader = document.querySelector('.loader');
+const loadMoreBtn = document.querySelector('.load-more');
 
 let lightbox = null;
 
@@ -68,4 +70,19 @@ export function showMessage(message) {
     message,
     position: 'topRight',
   });
+}
+export function showLoader() {
+  loader.classList.add('is-visible');
+}
+
+export function hideLoader() {
+  loader.classList.remove('is-visible');
+}
+
+export function showLoadMore() {
+  loadMoreBtn.classList.remove('hidden');
+}
+
+export function hideLoadMore() {
+  loadMoreBtn.classList.add('hidden');
 }
