@@ -5,6 +5,10 @@ import {
   clearGallery,
   showError,
   showMessage,
+  showLoader,
+  hideLoader,
+  showLoadMore,
+  hideLoadMore,
 } from './js/render-functions.js';
 
 import './css/styles.css';
@@ -25,6 +29,8 @@ searchForm.addEventListener('submit', onSearch);
 async function onSearch(event) {
   event.preventDefault();
 
+  if (isLoading) return;
+
   const query = searchInput.value.trim();
 
   if (!query) {
@@ -36,7 +42,10 @@ async function onSearch(event) {
   currentPage = 1;
 
   clearGallery();
-  loadMoreBtn.classList.add('hidden');
+  hideLoadMore();
+
+  isLoading = true;
+  showLoader();
 
   try {
     const data = await getImagesByQuery(currentQuery, currentPage);
@@ -52,12 +61,18 @@ async function onSearch(event) {
 
     renderImages(data.hits);
 
-    if (totalHits > PER_PAGE) {
-      loadMoreBtn.classList.remove('hidden');
+    if (totalHits <= PER_PAGE) {
+      hideLoadMore();
+      showMessage("We're sorry, but you've reached the end of search results.");
+    } else {
+      showLoadMore();
     }
   } catch (error) {
     showError('Something went wrong. Please try again later.');
     console.error(error);
+  } finally {
+    hideLoader();
+    isLoading = false;
   }
 }
 loadMoreBtn.addEventListener('click', onLoadMore);
@@ -67,7 +82,9 @@ async function onLoadMore() {
   if (isLoading) return;
 
   isLoading = true;
-  loadMoreBtn.disabled = true;
+
+  hideLoadMore();
+  showLoader();
 
   try {
     const nextPage = currentPage + 1;
@@ -90,15 +107,17 @@ async function onLoadMore() {
     }
 
     if (currentPage * PER_PAGE >= totalHits) {
-      loadMoreBtn.classList.add('hidden');
+      hideLoadMore();
 
       showMessage("We're sorry, but you've reached the end of search results.");
+    } else {
+      showLoadMore();
     }
   } catch (error) {
     showError('Something went wrong. Please try again later.');
     console.error(error);
   } finally {
+    hideLoader();
     isLoading = false;
-    loadMoreBtn.disabled = false;
   }
 }
