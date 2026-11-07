@@ -9,9 +9,10 @@ import {
 
 import './css/styles.css';
 
-const searchForm = document.querySelector('.search-form');
+const searchForm = document.querySelector('.form');
 const searchInput = document.querySelector('input[name="search-text"]');
 const loadMoreBtn = document.querySelector('.load-more');
+const loader = document.querySelector('.loader');
 
 let currentPage = 1;
 let currentQuery = '';
